@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Paper, Box, Typography } from '@mui/material';
 import './App.css';
 const CryptoJS = require('crypto-js');
-
-// const socket = io.connect('http://localhost:3000');
 
 function App() {
   const [state, setState] = useState({ msg: '', name: '', secret: '' });
@@ -27,7 +25,6 @@ function App() {
   const onTextChange = (e) => {
     // encrypt msg here
     if (e.target.name === 'name') {
-      // setMessage({ ...state, name: e.target.value });
       setState({ ...state, name: e.target.value });
     } else if (e.target.name === 'secret') {
       setState({ ...state, secret: e.target.value });
@@ -42,7 +39,6 @@ function App() {
   const messageSubmit = (e) => {
     e.preventDefault();
     const { name, msg, secret } = state;
-    // console.log(name, msg, secret);
     socketRef.current.emit('msg', { name, msg, secret });
     setState({ ...state, msg: '' });
     setMessage('');
@@ -64,59 +60,93 @@ function App() {
     }
   };
   return render ? (
-    <div className='card'>
-      <form onSubmit={messageSubmit}>
-        <h1>Messanger</h1>
-        <div>
-          <h1>Chat Log</h1>
-          {renderChat()}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'bottom' }}>
-          <TextField
-            name='msg'
-            value={message}
-            label='Message'
-            id='outlined-multiline-static'
-            onChange={(e) => onTextChange(e)}
-          />
-          <button>send</button>
-        </div>
-      </form>
-    </div>
-  ) : (
-    <div
-      className='card'
-      style={{
+    <Box
+      sx={{
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '8%',
       }}
     >
-      <div className='name-field'>
-        <TextField
-          name='name'
-          value={state.name}
-          label='Name'
-          onChange={(e) => onTextChange(e)}
-        />
-      </div>
-      <div>
-        <TextField
-          name='secret'
-          value={state.secret}
-          label='Secret'
-          onChange={(e) => onTextChange(e)}
-        />
-      </div>
-      <Button
-        sx={{ justifyContent: 'center', marginTop: '20px' }}
-        variant='outlined'
-        onClick={handleSubmit}
+      <Paper>
+        <form onSubmit={messageSubmit}>
+          <Typography variant='subtitle2'>Messanger</Typography>
+          <Box
+            sx={{
+              height: '350px',
+              maxWidth: '500px',
+              border: '1px solid black',
+              borderRadius: '5px',
+              padding: '10px',
+            }}
+          >
+            {renderChat()}
+          </Box>
+          <Box style={{ display: 'flex', justifyContent: 'center' }}>
+            <TextField
+              sx={{ marginTop: '10px' }}
+              name='msg'
+              value={message}
+              label='Message'
+              id='outlined-multiline-static'
+              onChange={(e) => onTextChange(e)}
+            />
+            <button style={{ margin: '20px 10px', width: '100px' }}>
+              send
+            </button>
+          </Box>
+        </form>
+      </Paper>
+    </Box>
+  ) : (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '8%',
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '400px',
+          height: '70vh',
+          justifyContent: 'center',
+          textAlign: 'center',
+        }}
       >
-        Submit
-      </Button>
-    </div>
+        <Typography sx={{ padding: '20px', margin: '0px' }}>
+          Enter userName and password
+        </Typography>
+        <div className='name-field'>
+          <TextField
+            name='name'
+            value={state.name}
+            label='Name'
+            onChange={(e) => onTextChange(e)}
+          />
+        </div>
+        <div>
+          <TextField
+            name='secret'
+            value={state.secret}
+            label='Secret'
+            onChange={(e) => onTextChange(e)}
+          />
+        </div>
+        <Button
+          sx={{ justifyContent: 'center', marginTop: '20px' }}
+          variant='outlined'
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+      </Paper>
+    </Box>
   );
 }
 
